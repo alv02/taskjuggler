@@ -19,7 +19,7 @@ project pSix "Web Game"  2023-03-15 +2.5m {
   # the project reports. If not specified, the current day will be
   # used, but this will likely be outside of the project range, so it
   # can't be seen in the reports.
-  now 2023-04-15-13:00
+  now 2023-05-3-12:00
   # The currency for all money values is the US Dollar.
   currency "EUR"
 
@@ -67,6 +67,10 @@ resource dev2 "Samantha Müller" {
 resource dev3 "Peter Green" {
   email "kkk@unizar.es"
 }
+resoruce dev4 "Álvaro López" {
+  email "820800@unizar.es"
+  rate 100
+}
 
 # Now we specify the work packages. The whole project is described as
 # a task that contains subtasks. These subtasks are then broken down
@@ -104,7 +108,7 @@ task WMGame "Web & Mobile Game" {
     task tlogic "Game logic" {
       effort 12d
       actual:effort 11d
-      allocate dev1, dev2
+      allocate dev1, dev2, dev4
       depends WMGame.tback.tBEd
       journalentry 2023-03-28 "Game logic completed before deadline" {
         author boss
@@ -114,7 +118,7 @@ task WMGame "Web & Mobile Game" {
     }
     task tbackDev "Back development" {
       effort 20d
-      allocate dev1, dev2
+      allocate dev1, dev2, dev4
       depends WMGame.tback.tlogic
     }
   }
@@ -151,6 +155,7 @@ task WMGame "Web & Mobile Game" {
       allocate boss
       allocate dev2
       actual:effort 15d
+      minstart 2023-06-1
       journalentry 2023-04-13 "Problems with the planned dates" {
         author boss
         alert red
@@ -158,6 +163,50 @@ task WMGame "Web & Mobile Game" {
       }
       depends WMGame.twebF
       depends WMGame.tback
+  }
+
+  task movilF "Movil Front End" {
+    purge chargeset
+    chargeset wFront
+    responsible dev3
+    depends WMGame.tback.tBEd
+    task tGUIm "Movil GUI Design" {
+      effort 9d
+      actual:effort 15d
+      allocate dev3
+      journalentry 2023-04-11 "Problems with the GUI design tool" {
+        author dev3
+        alert yellow
+        summary "The tool used for the GUI design has given me a lot of problems. I recommend to look for other one."
+      }
+    }
+    task tFEcm "Movil Front End Construction" {
+      effort 15d
+      allocate dev2, dev3
+      depends WMGame.movilF.tGUIm
+    }
+    task tFEtm "Movil Front End Test" {
+      effort 6d
+      allocate dev1
+      depends WMGame.movilF.tFEcm
+    }    
+  }
+
+  task despliegueNube "Deployment Backend" {
+    purge chargeset
+    chargeset back
+    responsible dev1
+    depends WMGame.tback.tBEd
+    task tDesElegirNube "Choose cloud provider" {
+      effort 2d
+      allocate dev4
+      depends WMGame.tback.tbackDev
+    }
+    task tDespliegue "Deployment" {
+      effort 5d
+      allocate dev4
+      depends WMGame.despliegueNube.tDesElegirNube
+    }
   }
 
     
