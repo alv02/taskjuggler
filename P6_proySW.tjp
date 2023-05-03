@@ -405,3 +405,13 @@ resourcereport resourceGraph "" {
   hidetask ~(isleaf() & isleaf_())
   sorttasks plan.start.up
 }
+
+# A list of all resources with their contact details.
+resourcereport resourceList "" {
+  scenarios actual
+  headline "Resource List"
+  columns name, email, chart { scale day }
+  hideresource ~isleaf()
+  sortresources name.up
+  hidetask @all
+}
